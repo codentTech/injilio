@@ -2,15 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import {
-  MessageCircle,
-  Plus,
-  Sparkles,
-  Zap,
-  Bot,
-  Users,
-  TrendingUp,
-} from "lucide-react";
+import { Bot, Zap, TrendingUp, Plus } from "lucide-react";
 import ChatbotBuilder from "@/components/dashboard/chatbot-builder";
 import Sidebar from "@/components/dashboard/sidebar";
 import Toolbar from "@/components/dashboard/toolbar";
@@ -19,41 +11,51 @@ export default function Dashboard() {
   const [selectedChatbot, setSelectedChatbot] = useState(null);
   const [isPreviewMode, setIsPreviewMode] = useState(false);
 
-  // Sample chatbot data
   const chatbots = [
     {
-      id: "1",
+      id: 1,
       name: "Customer Support Bot",
       status: "active",
       lastModified: "2 minutes ago",
-      description: "Handles customer inquiries and support requests",
+      description: "Handles customer inquiries and support tickets",
     },
     {
-      id: "2",
-      name: "Sales Assistant",
+      id: 2,
+      name: "Lead Qualification Bot",
       status: "draft",
       lastModified: "1 hour ago",
-      description: "Helps with product information and sales",
+      description: "Helps qualify leads and schedule demos",
     },
     {
-      id: "3",
+      id: 3,
       name: "FAQ Bot",
       status: "active",
       lastModified: "3 hours ago",
-      description: "Answers frequently asked questions",
+      description: "Answers common questions automatically",
     },
   ];
 
   const handleSelectChatbot = (chatbot) => {
     setSelectedChatbot(chatbot);
-    setIsPreviewMode(false);
   };
 
   const handleTogglePreview = () => {
     setIsPreviewMode(!isPreviewMode);
   };
 
-  // Welcome state when no chatbot is selected
+  const handleCreateFirstChatbot = () => {
+    // Create a new chatbot and select it
+    const newChatbot = {
+      id: Date.now(),
+      name: "New Chatbot",
+      status: "draft",
+      lastModified: "Just now",
+      description: "Your new chatbot - start building!",
+    };
+    setSelectedChatbot(newChatbot);
+  };
+
+  // Show welcome state when no chatbot is selected
   if (!selectedChatbot) {
     return (
       <div className="min-h-screen bg-gray-50">
@@ -66,29 +68,29 @@ export default function Dashboard() {
           />
 
           {/* Main content */}
-          <div className="flex-1 p-8 min-h-screen">
+          <div className="flex-1 p-4 sm:p-6 lg:p-8">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
-              className="max-w-4xl mx-auto text-center"
+              className="max-w-4xl mx-auto"
             >
-              {/* Header */}
-              <div className="mb-10">
+              {/* Hero Section */}
+              <div className="mb-8 sm:mb-10">
                 <motion.div
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
                   transition={{ delay: 0.2, type: "spring", damping: 15 }}
-                  className="w-20 h-20 bg-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg"
+                  className="w-16 h-16 sm:w-20 sm:h-20 bg-indigo-600 rounded-2xl flex items-center justify-center mx-auto mb-4 sm:mb-6 shadow-lg"
                 >
-                  <Bot className="w-10 h-10 text-white" />
+                  <Bot className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
                 </motion.div>
 
                 <motion.h1
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3, duration: 0.6 }}
-                  className="text-4xl font-bold text-gray-900 mb-4"
+                  className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3 sm:mb-4 text-center"
                 >
                   Welcome to Your Chatbot Studio
                 </motion.h1>
@@ -97,7 +99,7 @@ export default function Dashboard() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.4, duration: 0.6 }}
-                  className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed"
+                  className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed px-4 text-center"
                 >
                   Build, test, and deploy intelligent chatbots with our powerful
                   drag-and-drop interface. Create engaging conversations that
@@ -107,52 +109,52 @@ export default function Dashboard() {
 
               {/* Features Grid */}
               <motion.div
-                initial={{ opacity: 0, y: 40 }}
+                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5, duration: 0.6 }}
-                className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10"
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-8 sm:mb-10"
               >
-                <div className="p-6 bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105">
-                  <div className="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                    <Zap className="w-6 h-6 text-indigo-600" />
+                <div className="p-4 sm:p-6 bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-indigo-100 rounded-lg flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                    <Zap className="w-5 h-5 sm:w-6 sm:h-6 text-indigo-600" />
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                  <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2 sm:mb-3">
                     Visual Flow Builder
                   </h3>
-                  <p className="text-gray-600 leading-relaxed text-sm">
+                  <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
                     Drag and drop nodes to create complex conversation flows
                     with ease. No coding required.
                   </p>
                 </div>
 
-                <div className="p-6 bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105">
-                  <div className="w-12 h-12 bg-emerald-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                    <Bot className="w-6 h-6 text-emerald-600" />
+                <div className="p-4 sm:p-6 bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-emerald-100 rounded-lg flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                    <Bot className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-600" />
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                  <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2 sm:mb-3">
                     AI-Powered Responses
                   </h3>
-                  <p className="text-gray-600 leading-relaxed text-sm">
+                  <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
                     Train your chatbot with natural language processing for
                     intelligent, contextual conversations.
                   </p>
                 </div>
 
-                <div className="p-6 bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105">
-                  <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-4">
-                    <TrendingUp className="w-6 h-6 text-purple-600" />
+                <div className="p-4 sm:p-6 bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105 sm:col-span-2 lg:col-span-1">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-3 sm:mb-4">
+                    <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600" />
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                  <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2 sm:mb-3">
                     Analytics & Insights
                   </h3>
-                  <p className="text-gray-600 leading-relaxed text-sm">
+                  <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
                     Track performance, understand user behavior, and optimize
                     your chatbot for better results.
                   </p>
                 </div>
               </motion.div>
 
-              {/* CTA */}
+              {/* CTA Button */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -160,15 +162,15 @@ export default function Dashboard() {
                 className="text-center"
               >
                 <button
-                  onClick={() => handleSelectChatbot(chatbots[0])}
-                  className="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-sm hover:shadow-md transform hover:scale-105 font-semibold text-base flex items-center mx-auto"
+                  onClick={handleCreateFirstChatbot}
+                  className="px-5 py-3 sm:px-6 sm:py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-sm hover:shadow-md transform hover:scale-105 font-semibold text-sm sm:text-base flex items-center mx-auto"
                 >
-                  <Plus className="w-5 h-5 mr-2" />
+                  <Plus className="w-4 h-5 sm:w-5 sm:h-5 mr-2" />
                   Start Building Your First Chatbot
                 </button>
 
                 <p className="text-gray-500 mt-3 text-sm">
-                  Select a chatbot from the sidebar to begin editing
+                  Or select a chatbot from the sidebar to begin editing
                 </p>
               </motion.div>
             </motion.div>
@@ -178,7 +180,7 @@ export default function Dashboard() {
     );
   }
 
-  // Main dashboard with selected chatbot
+  // Show chatbot builder when a chatbot is selected
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="flex h-screen">
@@ -190,7 +192,7 @@ export default function Dashboard() {
         />
 
         {/* Main content */}
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col min-w-0">
           {/* Toolbar */}
           <Toolbar
             chatbot={selectedChatbot}

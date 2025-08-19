@@ -5,38 +5,48 @@ import { motion } from "framer-motion";
 import {
   X,
   Save,
-  Copy,
   Trash2,
-  Settings,
+  Copy,
   MessageCircle,
+  Play,
+  Square,
   Zap,
   Database,
   Code,
-  User,
-  Bot,
-  Sparkles,
+  Settings,
+  Users,
+  FileText,
+  Bell,
 } from "lucide-react";
 
 export default function NodePanel({ node, onClose }) {
-  const [nodeData, setNodeData] = useState({ ...node.data });
   const [activeTab, setActiveTab] = useState("properties");
+  const [nodeData, setNodeData] = useState(node.data);
 
   const getNodeIcon = (type) => {
     switch (type) {
       case "trigger":
-        return <User className="w-6 h-6 text-blue-600" />;
+        return <Play className="w-5 h-5" />;
       case "message":
-        return <Bot className="w-6 h-6 text-green-600" />;
+        return <MessageCircle className="w-5 h-5" />;
       case "options":
-        return <MessageCircle className="w-6 h-6 text-purple-600" />;
+        return <Square className="w-5 h-5" />;
       case "action":
-        return <Zap className="w-6 h-6 text-orange-600" />;
+        return <Zap className="w-5 h-5" />;
       case "database":
-        return <Database className="w-6 h-6 text-red-600" />;
+        return <Database className="w-5 h-5" />;
       case "code":
-        return <Code className="w-6 h-6 text-indigo-600" />;
+        return <Code className="w-5 h-5" />;
+      case "notification":
+        return <Bell className="w-5 h-5" />;
+      case "file":
+        return <FileText className="w-5 h-5" />;
+      case "users":
+        return <Users className="w-5 h-5" />;
+      case "settings":
+        return <Settings className="w-5 h-5" />;
       default:
-        return <MessageCircle className="w-6 h-6 text-gray-600" />;
+        return <MessageCircle className="w-5 h-5" />;
     }
   };
 
@@ -54,190 +64,293 @@ export default function NodePanel({ node, onClose }) {
         return "Database Node";
       case "code":
         return "Code Node";
+      case "notification":
+        return "Notification Node";
+      case "file":
+        return "File Node";
+      case "users":
+        return "Users Node";
+      case "settings":
+        return "Settings Node";
       default:
         return "Node";
     }
   };
 
   const handleSave = () => {
-    console.log("Saving node:", { ...node, data: nodeData });
+    // Update node data
+    node.data = { ...nodeData };
     onClose();
   };
 
   const handleDelete = () => {
-    if (confirm("Are you sure you want to delete this node?")) {
-      console.log("Deleting node:", node.id);
-      onClose();
-    }
+    // Handle node deletion
+    onClose();
   };
 
   const renderPropertiesTab = () => (
-    <div className="space-y-6">
-      <div>
-        <label className="block text-sm font-semibold text-gray-700 mb-3">
-          Node Label
-        </label>
-        <input
-          type="text"
-          value={nodeData.label}
-          onChange={(e) => setNodeData({ ...nodeData, label: e.target.value })}
-          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/80"
-          placeholder="Enter node label"
-        />
-      </div>
-
-      <div>
-        <label className="block text-sm font-semibold text-gray-700 mb-3">
-          Description
-        </label>
-        <textarea
-          value={nodeData.description}
-          onChange={(e) =>
-            setNodeData({ ...nodeData, description: e.target.value })
-          }
-          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/80 resize-none"
-          rows="3"
-          placeholder="Enter node description"
-        />
-      </div>
-
-      {node.type === "message" && (
-        <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-3">
-            Message Content
-          </label>
-          <textarea
-            value={nodeData.content || ""}
-            onChange={(e) =>
-              setNodeData({ ...nodeData, content: e.target.value })
-            }
-            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/80 resize-none"
-            rows="4"
-            placeholder="Enter message content"
-          />
+    <div className="space-y-4 min-w-full">
+      {/* Node Type Display */}
+      <div className="flex items-center gap-2 p-3 bg-indigo-50 rounded-lg border border-indigo-200 min-w-fit">
+        <div className="p-2 bg-white rounded-lg text-indigo-600">
+          {getNodeIcon(node.type)}
         </div>
-      )}
+        <span className="text-sm font-medium text-indigo-700 capitalize whitespace-nowrap">
+          {node.type} Node
+        </span>
+      </div>
 
-      {node.type === "options" && (
-        <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-3">
-            Options
-          </label>
-          <div className="space-y-3">
-            {(nodeData.options || []).map((option, index) => (
-              <div key={index} className="flex items-center space-x-3">
-                <input
-                  type="text"
-                  value={option}
-                  onChange={(e) => {
-                    const newOptions = [...(nodeData.options || [])];
-                    newOptions[index] = e.target.value;
-                    setNodeData({ ...nodeData, options: newOptions });
-                  }}
-                  className="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white/80"
-                  placeholder={`Option ${index + 1}`}
+      {/* Properties Table */}
+      <div className="overflow-x-auto">
+        <div className="min-w-[600px] space-y-4">
+          {/* Label Input */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-start">
+            <label className="block text-sm font-medium text-indigo-700 mb-2 lg:mb-0 lg:pt-2 whitespace-nowrap">
+              Label
+            </label>
+            <div className="lg:col-span-2">
+              <input
+                type="text"
+                value={nodeData.label}
+                onChange={(e) =>
+                  setNodeData({ ...nodeData, label: e.target.value })
+                }
+                className="w-full px-3 py-2 border border-indigo-200 rounded-lg text-sm text-indigo-900 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                placeholder="Enter node label"
+              />
+            </div>
+          </div>
+
+          {/* Description Input */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-start">
+            <label className="block text-sm font-medium text-indigo-700 mb-2 lg:mb-0 lg:pt-2 whitespace-nowrap">
+              Description
+            </label>
+            <div className="lg:col-span-2">
+              <textarea
+                value={nodeData.description}
+                onChange={(e) =>
+                  setNodeData({ ...nodeData, description: e.target.value })
+                }
+                rows={3}
+                className="w-full px-3 py-2 border border-indigo-200 rounded-lg text-sm text-indigo-900 focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
+                placeholder="Enter node description"
+              />
+            </div>
+          </div>
+
+          {/* Type-specific fields */}
+          {node.type === "message" && (
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-start">
+              <label className="block text-sm font-medium text-indigo-700 mb-2 lg:mb-0 lg:pt-2 whitespace-nowrap">
+                Message Content
+              </label>
+              <div className="lg:col-span-2">
+                <textarea
+                  value={nodeData.content || ""}
+                  onChange={(e) =>
+                    setNodeData({ ...nodeData, content: e.target.value })
+                  }
+                  rows={4}
+                  className="w-full px-3 py-2 border border-indigo-200 rounded-lg text-sm text-indigo-900 focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
+                  placeholder="Enter message content"
                 />
-                <button
-                  onClick={() => {
-                    const newOptions = (nodeData.options || []).filter(
-                      (_, i) => i !== index
-                    );
-                    setNodeData({ ...nodeData, options: newOptions });
-                  }}
-                  className="p-3 text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200 hover:scale-110"
-                >
-                  <Trash2 className="w-5 h-5" />
-                </button>
               </div>
-            ))}
-            <button
-              onClick={() => {
-                const newOptions = [...(nodeData.options || []), ""];
-                setNodeData({ ...nodeData, options: newOptions });
-              }}
-              className="w-full p-4 border-2 border-dashed border-blue-300 rounded-xl text-blue-600 hover:border-blue-400 hover:text-blue-700 hover:bg-blue-50 transition-all duration-200 font-medium"
-            >
-              + Add Option
-            </button>
+            </div>
+          )}
+
+          {node.type === "options" && (
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-start">
+              <label className="block text-sm font-medium text-indigo-700 mb-2 lg:mb-0 lg:pt-2 whitespace-nowrap">
+                Options (one per line)
+              </label>
+              <div className="lg:col-span-2">
+                <textarea
+                  value={(nodeData.options || []).join("\n")}
+                  onChange={(e) =>
+                    setNodeData({
+                      ...nodeData,
+                      options: e.target.value
+                        .split("\n")
+                        .filter((opt) => opt.trim()),
+                    })
+                  }
+                  rows={4}
+                  className="w-full px-3 py-2 border border-indigo-200 rounded-lg text-sm text-indigo-900 focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
+                  placeholder="Option 1&#10;Option 2&#10;Option 3"
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Additional Properties Table */}
+          <div className="overflow-x-auto">
+            <div className="min-w-[600px]">
+              <table className="w-full border-collapse">
+                <thead>
+                  <tr className="border-b border-gray-200">
+                    <th className="text-left py-2 px-3 text-xs font-medium text-gray-600 uppercase tracking-wider whitespace-nowrap">
+                      Property
+                    </th>
+                    <th className="text-left py-2 px-3 text-xs font-medium text-gray-600 uppercase tracking-wider whitespace-nowrap">
+                      Value
+                    </th>
+                    <th className="text-left py-2 px-3 text-xs font-medium text-gray-600 uppercase tracking-wider whitespace-nowrap">
+                      Type
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  <tr className="hover:bg-gray-50">
+                    <td className="py-2 px-3 text-sm font-medium text-gray-900 whitespace-nowrap">
+                      Node ID
+                    </td>
+                    <td className="py-2 px-3 text-sm text-gray-600 font-mono text-xs">
+                      {node.id}
+                    </td>
+                    <td className="py-2 px-3 text-sm text-gray-500">String</td>
+                  </tr>
+                  <tr className="hover:bg-gray-50">
+                    <td className="py-2 px-3 text-sm font-medium text-gray-900 whitespace-nowrap">
+                      Position X
+                    </td>
+                    <td className="py-2 px-3 text-sm text-gray-600">
+                      {Math.round(node.position.x)}
+                    </td>
+                    <td className="py-2 px-3 text-sm text-gray-500">Number</td>
+                  </tr>
+                  <tr className="hover:bg-gray-50">
+                    <td className="py-2 px-3 text-sm font-medium text-gray-900 whitespace-nowrap">
+                      Position Y
+                    </td>
+                    <td className="py-2 px-3 text-sm text-gray-600">
+                      {Math.round(node.position.y)}
+                    </td>
+                    <td className="py-2 px-3 text-sm text-gray-500">Number</td>
+                  </tr>
+                  <tr className="hover:bg-gray-50">
+                    <td className="py-2 px-3 text-sm font-medium text-gray-900 whitespace-nowrap">
+                      Created
+                    </td>
+                    <td className="py-2 px-3 text-sm text-gray-600">
+                      {new Date().toLocaleDateString()}
+                    </td>
+                    <td className="py-2 px-3 text-sm text-gray-500">Date</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 
   const renderSettingsTab = () => (
-    <div className="space-y-6">
-      <div>
-        <label className="block text-sm font-semibold text-gray-700 mb-3">
-          Node ID
-        </label>
-        <input
-          type="text"
-          value={node.id}
-          disabled
-          className="w-full px-4 py-3 border border-gray-300 rounded-xl bg-gray-100 text-gray-600 cursor-not-allowed"
-        />
-      </div>
+    <div className="space-y-4 min-w-full">
+      <div className="overflow-x-auto">
+        <div className="min-w-[600px] space-y-4">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-start">
+            <div className="lg:col-span-3">
+              <div className="p-4 bg-gray-50 rounded-lg">
+                <h4 className="font-medium text-gray-900 mb-2">
+                  Node Settings
+                </h4>
+                <p className="text-sm text-gray-600">
+                  Advanced configuration options for this node will be available
+                  here.
+                </p>
+              </div>
+            </div>
+          </div>
 
-      <div>
-        <label className="block text-sm font-semibold text-gray-700 mb-3">
-          Node Type
-        </label>
-        <input
-          type="text"
-          value={getNodeTypeLabel(node.type)}
-          disabled
-          className="w-full px-4 py-3 border border-gray-300 rounded-xl bg-gray-100 text-gray-600 cursor-not-allowed"
-        />
-      </div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 items-start">
+            <div className="lg:col-span-3">
+              <div className="p-4 bg-gray-50 rounded-lg">
+                <h4 className="font-medium text-gray-900 mb-2">Performance</h4>
+                <p className="text-sm text-gray-600">
+                  Configure execution timeouts and resource limits.
+                </p>
+              </div>
+            </div>
+          </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-3">
-            X Position
-          </label>
-          <input
-            type="number"
-            value={Math.round(node.position.x)}
-            disabled
-            className="w-full px-4 py-3 border border-gray-300 rounded-xl bg-gray-100 text-gray-600 cursor-not-allowed"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-3">
-            Y Position
-          </label>
-          <input
-            type="number"
-            value={Math.round(node.position.y)}
-            disabled
-            className="w-full px-4 py-3 border border-gray-300 rounded-xl bg-gray-100 text-gray-600 cursor-not-allowed"
-          />
+          {/* Settings Table */}
+          <div className="overflow-x-auto">
+            <div className="min-w-[600px]">
+              <table className="w-full border-collapse">
+                <thead>
+                  <tr className="border-b border-gray-200">
+                    <th className="text-left py-2 px-3 text-xs font-medium text-gray-600 uppercase tracking-wider whitespace-nowrap">
+                      Setting
+                    </th>
+                    <th className="text-left py-2 px-3 text-xs font-medium text-gray-600 uppercase tracking-wider whitespace-nowrap">
+                      Current Value
+                    </th>
+                    <th className="text-left py-2 px-3 text-xs font-medium text-gray-600 uppercase tracking-wider whitespace-nowrap">
+                      Action
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  <tr className="hover:bg-gray-50">
+                    <td className="py-2 px-3 text-sm font-medium text-gray-900 whitespace-nowrap">
+                      Execution Timeout
+                    </td>
+                    <td className="py-2 px-3 text-sm text-gray-600">
+                      30 seconds
+                    </td>
+                    <td className="py-2 px-3 text-sm text-gray-500">
+                      <button className="text-indigo-600 hover:text-indigo-700 text-xs">
+                        Configure
+                      </button>
+                    </td>
+                  </tr>
+                  <tr className="hover:bg-gray-50">
+                    <td className="py-2 px-3 text-sm font-medium text-gray-900 whitespace-nowrap">
+                      Memory Limit
+                    </td>
+                    <td className="py-2 px-3 text-sm text-gray-600">128 MB</td>
+                    <td className="py-2 px-3 text-sm text-gray-500">
+                      <button className="text-indigo-600 hover:text-indigo-700 text-xs">
+                        Configure
+                      </button>
+                    </td>
+                  </tr>
+                  <tr className="hover:bg-gray-50">
+                    <td className="py-2 px-3 text-sm font-medium text-gray-900 whitespace-nowrap">
+                      Retry Attempts
+                    </td>
+                    <td className="py-2 px-3 text-sm text-gray-600">3</td>
+                    <td className="py-2 px-3 text-sm text-gray-500">
+                      <button className="text-indigo-600 hover:text-indigo-700 text-xs">
+                        Configure
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   );
 
   return (
-    <motion.div
-      initial={{ x: "100%", opacity: 0 }}
-      animate={{ x: 0, opacity: 1 }}
-      exit={{ x: "100%", opacity: 0 }}
-      transition={{ type: "spring", damping: 25, stiffness: 200 }}
-      className="w-96 bg-white/95 backdrop-blur-sm border-l border-gray-200/50 shadow-2xl flex flex-col"
-    >
+    <div className="flex flex-col h-full bg-white">
       {/* Header */}
-      <div className="p-6 border-b border-gray-200/50 bg-gradient-to-r from-gray-50 to-blue-50">
+      <div className="p-4 sm:p-6 border-b border-gray-200 bg-gray-50 flex-shrink-0">
         <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center space-x-4">
-            <div className="p-3 bg-gradient-to-r from-blue-100 to-indigo-100 rounded-xl">
+          <div className="flex items-center space-x-3 sm:space-x-4">
+            <div className="p-2 sm:p-3 bg-indigo-100 rounded-xl">
               {getNodeIcon(node.type)}
             </div>
             <div>
-              <h3 className="text-lg font-bold text-gray-900">
+              <h3 className="text-base sm:text-lg font-bold text-gray-900">
                 {nodeData.label}
               </h3>
-              <p className="text-sm text-gray-600">
+              <p className="text-xs sm:text-sm text-gray-600">
                 {getNodeTypeLabel(node.type)}
               </p>
             </div>
@@ -246,7 +359,7 @@ export default function NodePanel({ node, onClose }) {
             onClick={onClose}
             className="p-2 hover:bg-gray-100 rounded-xl transition-all duration-200 hover:scale-110"
           >
-            <X className="w-5 h-5 text-gray-600" />
+            <X className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" />
           </button>
         </div>
 
@@ -254,9 +367,9 @@ export default function NodePanel({ node, onClose }) {
         <div className="flex space-x-2">
           <button
             onClick={() => setActiveTab("properties")}
-            className={`px-4 py-2 text-sm font-semibold rounded-lg transition-all duration-200 ${
+            className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold rounded-lg transition-all duration-200 ${
               activeTab === "properties"
-                ? "bg-blue-100 text-blue-700 shadow-sm"
+                ? "bg-indigo-100 text-indigo-700 shadow-sm"
                 : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
             }`}
           >
@@ -264,9 +377,9 @@ export default function NodePanel({ node, onClose }) {
           </button>
           <button
             onClick={() => setActiveTab("settings")}
-            className={`px-4 py-2 text-sm font-semibold rounded-lg transition-all duration-200 ${
+            className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold rounded-lg transition-all duration-200 ${
               activeTab === "settings"
-                ? "bg-blue-100 text-blue-700 shadow-sm"
+                ? "bg-indigo-100 text-indigo-700 shadow-sm"
                 : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
             }`}
           >
@@ -275,52 +388,52 @@ export default function NodePanel({ node, onClose }) {
         </div>
       </div>
 
-      {/* Content */}
-      <div className="flex-1 overflow-y-auto p-6">
+      {/* Content - Scrollable with horizontal scroll */}
+      <div className="flex-1 overflow-y-auto overflow-x-auto p-4 sm:p-6 min-h-0">
         {activeTab === "properties"
           ? renderPropertiesTab()
           : renderSettingsTab()}
       </div>
 
       {/* Footer */}
-      <div className="p-6 border-t border-gray-200/50 bg-gradient-to-r from-gray-50 to-blue-50">
-        <div className="flex items-center justify-between">
-          <div className="flex space-x-3">
+      <div className="p-4 sm:p-6 border-t border-gray-200 bg-gray-50 flex-shrink-0">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0">
+          <div className="flex space-x-2 sm:space-x-3">
             <button
               onClick={handleDelete}
-              className="p-3 text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200 hover:scale-110"
+              className="p-2 sm:p-3 text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200 hover:scale-110"
               title="Delete node"
             >
-              <Trash2 className="w-5 h-5" />
+              <Trash2 className="w-4 h-4 sm:w-5 sm:h-5" />
             </button>
             <button
               onClick={() => {
                 console.log("Copying node:", node);
               }}
-              className="p-3 text-gray-600 hover:bg-gray-100 rounded-xl transition-all duration-200 hover:scale-110"
+              className="p-2 sm:p-3 text-gray-600 hover:bg-gray-100 rounded-xl transition-all duration-200 hover:scale-110"
               title="Copy node"
             >
-              <Copy className="w-5 h-5" />
+              <Copy className="w-4 h-4 sm:w-5 sm:h-5" />
             </button>
           </div>
 
-          <div className="flex space-x-3">
+          <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
             <button
               onClick={onClose}
-              className="px-6 py-3 text-gray-700 bg-white border-2 border-gray-300 rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 font-medium"
+              className="px-4 sm:px-6 py-2 sm:py-3 text-gray-700 bg-white border-2 border-gray-300 rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 font-medium text-sm sm:text-base"
             >
               Cancel
             </button>
             <button
               onClick={handleSave}
-              className="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center font-medium"
+              className="px-4 sm:px-6 py-2 sm:py-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center justify-center font-medium text-sm sm:text-base"
             >
-              <Save className="w-5 h-5 mr-2" />
+              <Save className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
               Save
             </button>
           </div>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }

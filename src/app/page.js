@@ -5,6 +5,7 @@ import Hero from "@/components/landing-page/hero";
 import Features from "@/components/landing-page/features";
 import CTA from "@/components/landing-page/cta";
 import Footer from "@/components/landing-page/footer";
+import ChatbotWidget from "@/components/landing-page/chatbot-widget";
 
 export default function Home() {
   return (
@@ -14,6 +15,7 @@ export default function Home() {
       <Features />
       <CTA />
       <Footer />
+      <ChatbotWidget />
     </div>
   );
 }

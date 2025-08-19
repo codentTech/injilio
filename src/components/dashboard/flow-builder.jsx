@@ -525,7 +525,7 @@ export default function SimpleFlowBuilder() {
 
       {/* Step 21: Main canvas - clean white background */}
       <div
-        className="flow-container w-full h-full relative cursor-default bg-white"
+        className="flow-container w-full h-full relative cursor-default bg-white overflow-x-auto"
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
         onClick={handleCanvasClick}
